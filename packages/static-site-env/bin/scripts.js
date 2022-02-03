@@ -7,9 +7,9 @@ const fs = require("fs-extra");
 const spawn = require("cross-spawn");
 const argv = require("minimist")(process.argv.slice(2), { "--": true });
 
-function getSstAppPath() {
+function getSstAppPath(startPath) {
   // Traverse up directory until finds `sst.json`
-  let curPath = process.cwd();
+  let curPath = startPath;
   do {
     if (fs.existsSync(path.join(curPath, "sst.json"))) {
       return path.resolve(curPath);
@@ -18,10 +18,15 @@ function getSstAppPath() {
   } while (path.resolve(curPath) !== path.resolve("/"));
 }
 
+// First command line argument is directory where to start search for sst.json from or use cwd if not specified
+const startPath = argv["_"] && argv["_"].length ? argv["_"][0] : process.cwd();
+
 // Get SST app path
-const sstAppPath = getSstAppPath();
+const sstAppPath = getSstAppPath(startPath);
 if (!sstAppPath) {
-  console.error("sst-env: Cannot find an SST app in the parent directories");
+  console.error(
+    `sst-env: Cannot find an SST app in the parent directories of ${startPath}`
+  );
   process.exit(1);
 }
 

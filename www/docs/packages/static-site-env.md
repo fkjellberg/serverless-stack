@@ -69,8 +69,6 @@ npm run dev
 Here's what's going on behind the scenes.
 
 1. The `sst start` command generates a file with the values specified by `ReactStaticSite` or `NextjsSite` construct's `environment` prop.
-2. The `sst-env` CLI will traverse up the directories to look for the root of your SST app.
+2. The `sst-env` CLI will traverse up the directories to look for the root of your SST app. The script takes an optional argument to specify where to begin the search, e.g. `sst-env ../sst-app`. Default is to begin at the current directory and only works if the React or Next.js app is located inside the SST app or inside one of its subdirectories.
 3. It'll then find the file that's generated in step 1.
 4. It'll load these as environment variables before running the start command.
-
-Note that, `sst-env` only works if the React or Next.js app is located inside the SST app or inside one of its subdirectories.
