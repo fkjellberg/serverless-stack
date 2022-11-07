@@ -154,6 +154,8 @@ export async function prepareCdk(_argv, cliInfo, config) {
 
   writePackageJson(paths.appBuildPath);
 
+  symlinkNodeModules(paths.appBuildPath);
+
   await writeConfig(config);
   await copyWrapperFiles();
 
@@ -161,6 +163,14 @@ export async function prepareCdk(_argv, cliInfo, config) {
   runCdkVersionMatch(appPackageJson, cliInfo);
 
   await Stacks.build(paths.appPath, config);
+}
+
+function symlinkNodeModules(appBuildPath) {
+  // Symlink application node_modules folder to this package's own node_modules
+  // to make dependencies available to run.mjs when using pnpm package manager
+  const ownNodeModulesPath = path.resolve(paths.ownPath, "../../");
+  const appNodeModulesPath = path.resolve(paths.appBuildPath, "node_modules");
+  fs.symlinkSync(ownNodeModulesPath, appNodeModulesPath, "junction");
 }
 
 export async function writeConfig(config) {
